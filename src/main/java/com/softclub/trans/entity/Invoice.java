@@ -1,6 +1,9 @@
 package com.softclub.trans.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -9,17 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
-public class Order {
+public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private String description;
 
-    private double amount;
+    private Long orderId;
+    private Double amount;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
 }

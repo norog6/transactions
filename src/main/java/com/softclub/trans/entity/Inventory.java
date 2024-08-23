@@ -9,17 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
-public class Order {
+@Table(name = "inventory")
+public class Inventory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private String description;
 
-    private double amount;
+    private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
 }

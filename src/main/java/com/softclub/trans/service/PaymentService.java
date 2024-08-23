@@ -23,4 +23,14 @@ public class PaymentService {
         // Сохраняем платеж
         paymentRepository.save(payment);
     }
+
+    @Transactional(timeout = 5)
+    public void processPayment(Payment payment) {
+        try {
+            paymentRepository.save(payment);
+        } catch (Exception e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Payment processing interrupted", e);
+        }
+    }
 }

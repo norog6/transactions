@@ -5,21 +5,21 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
-public class Order {
+@Table(name="supliers")
+public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private String description;
 
-    private double amount;
+    private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    private String product;
+
+    private LocalDateTime createdAt;
 }

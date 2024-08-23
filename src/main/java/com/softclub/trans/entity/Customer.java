@@ -9,17 +9,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
-public class Order {
+public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column
-    private String description;
-
-    private double amount;
-
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    Long id;
+    String name;
 }

@@ -5,21 +5,18 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+
 @RequiredArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "orders")
-public class Order {
+public class CustomerDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column
-    private String description;
+    Long id;
 
-    private double amount;
+    Long customerId;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
+    @Column(nullable = false)
+    String address;
 }

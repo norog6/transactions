@@ -1,8 +1,10 @@
 package com.softclub.trans.entity;
 
-import jakarta.persistence.GenerationType;
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 
 @RequiredArgsConstructor
@@ -11,6 +13,8 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

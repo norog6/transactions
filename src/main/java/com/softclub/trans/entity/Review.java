@@ -1,11 +1,11 @@
 package com.softclub.trans.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 @RequiredArgsConstructor
 @Getter
@@ -14,7 +14,8 @@ import org.springframework.data.annotation.Id;
 @Table(name = "reviews")
 public class Review {
 
-    @jakarta.persistence.Id
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

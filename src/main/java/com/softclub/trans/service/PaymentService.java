@@ -15,12 +15,10 @@ public class PaymentService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createPayment(Payment payment) {
-        // Если сумма отрицательная, выбрасываем исключение
         if (payment.getAmount() <= 0) {
             throw new IllegalArgumentException("Сумма платежа должна быть положительной");
         }
 
-        // Сохраняем платеж
         paymentRepository.save(payment);
     }
 

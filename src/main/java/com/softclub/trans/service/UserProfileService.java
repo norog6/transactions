@@ -18,18 +18,20 @@ public class UserProfileService {
     @PersistenceContext
     private EntityManager entityManager;
 
-   @Transactional()
+    @Transactional()
     public void Update(UserProfile userProfile) {
-       UserProfile userProfile1=userProfileRepository.findByName(userProfile.getName())
+        UserProfile userProfile1 = userProfileRepository.findByName(userProfile.getName())
                 .orElseThrow(() -> new RuntimeException("User profile not found"));
         userProfile1.setName(userProfile.getEmail());
         userProfile1.setGender(userProfile.getGender());
         UpdateUserProfile(userProfile1);
     }
+
     @Transactional(propagation = Propagation.MANDATORY)
     public void UpdateUserProfile(UserProfile userProfile) {
         userProfileRepository.save(userProfile);
     }
+
     @Transactional
     public void updateUserProfile(Long userId, UserProfile userProfile) {
         boolean updated = false;

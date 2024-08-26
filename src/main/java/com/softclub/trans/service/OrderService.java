@@ -29,7 +29,6 @@ public class OrderService {
 
     @Transactional
     public void createOrderWithPayment(Order order, Payment payment) {
-        // Сохраняем заказ
         orderRepository.save(order);
         payment.setOrderId(order.getId());
         try {
@@ -41,10 +40,11 @@ public class OrderService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Order> getAllOrders() {
-        return   orderRepository.findAll();
+        return orderRepository.findAll();
     }
+
     @Transactional
-    public void updateOrderStatus(Long orderId, Double newAmount) {
+    public void updateOrderSum(Long orderId, Double newAmount) {
         Optional<Order> orderOpt = orderRepository.findByIdForUpdate(orderId);
         if (orderOpt.isPresent()) {
             Order order = orderOpt.get();
@@ -54,22 +54,16 @@ public class OrderService {
             throw new RuntimeException("Order not found with id: " + orderId);
         }
     }
+
     public void createOrderAndInvoice(Order order, Invoice invoice) {
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 try {
-                    // Сохранение заказа
                     Order savedOrder = orderRepository.save(order);
-
-                    // Привязка инвойса к заказу
                     invoice.setOrderId(savedOrder.getId());
-
-                    // Сохранение инвойса
                     invoiceRepository.save(invoice);
-
                 } catch (Exception e) {
-                    // Откат транзакции в случае ошибки
                     status.setRollbackOnly();
                     throw new RuntimeException("Transaction failed: " + e.getMessage(), e);
                 }

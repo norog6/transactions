@@ -38,9 +38,10 @@ public class ProductService {
         reviewRepository.save(review);
         try {
         } catch (Exception e) {
-           throw  new RuntimeException("review transaction rolled back:"+e.getMessage());
+            throw new RuntimeException("review transaction rolled back:" + e.getMessage());
         }
     }
+
     @Transactional
     public void updateProduct(Product product) {
         int retryCount = 0;

@@ -1,5 +1,6 @@
 package com.softclub.trans.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     private String name;
@@ -28,6 +31,6 @@ public class Product {
     private int version;
 
     public void calculateRating(List<Review> reviews) {
-        this.rating=reviews.stream().mapToDouble(r->r.getRating()).average().orElse(0);
+        this.rating = reviews.stream().mapToDouble(r -> r.getRating()).average().orElse(0);
     }
 }

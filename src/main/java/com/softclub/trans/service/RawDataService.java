@@ -13,6 +13,7 @@ import java.util.List;
 public class RawDataService {
     @Autowired
     RawDataRepository rawDataRepository;
+
     @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public List<RawData> readUncommittedData() {
         return rawDataRepository.findAll();

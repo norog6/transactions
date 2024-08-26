@@ -2,7 +2,6 @@ package com.softclub.trans.DTO;
 
 import com.softclub.trans.entity.Invoice;
 import com.softclub.trans.entity.Order;
-import com.softclub.trans.entity.Product;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -1,5 +1,6 @@
 package com.softclub.trans.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,14 @@ import lombok.Setter;
 @Setter
 @Entity
 public class CustomerDetails {
+
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    Long customerId;
+    private Long customerId;
 
     @Column(nullable = false)
-    String address;
+    private String address;
 }

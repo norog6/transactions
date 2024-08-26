@@ -27,6 +27,7 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Version
     private int version;
 

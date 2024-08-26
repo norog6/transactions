@@ -26,8 +26,10 @@ public class Review {
 
     private double rating;
 
+
+
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Product product;
-
 }

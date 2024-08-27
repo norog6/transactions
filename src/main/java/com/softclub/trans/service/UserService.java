@@ -1,5 +1,7 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.UserDTO;
+import com.softclub.trans.Mapper.UserMapper;
 import com.softclub.trans.entity.User;
 import com.softclub.trans.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +21,12 @@ public class UserService {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    @Autowired
+    private UserMapper userMapper;
 
-    public void addUser(User user) {
+
+    public void addUser(UserDTO userDTO) {
+        User user = userMapper.toEntity(userDTO);
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
@@ -35,7 +41,8 @@ public class UserService {
     }
 
     @Transactional(propagation = Propagation.NEVER)
-    public void AddUSerWithoutTransaction(User user) {
+    public void AddUSerWithoutTransaction(UserDTO userDTO) {
+        User user = userMapper.toEntity(userDTO);
         userRepository.save(user);
     }
 }

@@ -1,5 +1,7 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.PaymentDTO;
+import com.softclub.trans.Mapper.PaymentMapper;
 import com.softclub.trans.entity.Payment;
 import com.softclub.trans.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,9 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private PaymentMapper paymentMapper;
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void createPayment(Payment payment) {
         if (payment.getAmount() <= 0) {
@@ -23,7 +28,8 @@ public class PaymentService {
     }
 
     @Transactional(timeout = 5)
-    public void processPayment(Payment payment) {
+    public void processPayment(PaymentDTO paymentDTO) {
+        Payment payment = paymentMapper.toEntity(paymentDTO);
         try {
             paymentRepository.save(payment);
         } catch (Exception e) {

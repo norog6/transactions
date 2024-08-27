@@ -1,5 +1,7 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.USerProfileDTO;
+import com.softclub.trans.Mapper.UserProfileMapper;
 import com.softclub.trans.entity.UserProfile;
 import com.softclub.trans.repository.UserProfileREpositry;
 import jakarta.persistence.EntityManager;
@@ -18,8 +20,12 @@ public class UserProfileService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private UserProfileMapper userProfileMapper;
+
     @Transactional()
-    public void Update(UserProfile userProfile) {
+    public void Update(USerProfileDTO userProfileDTO) {
+        UserProfile userProfile = userProfileMapper.toEntity(userProfileDTO);
         UserProfile userProfile1 = userProfileRepository.findByName(userProfile.getName())
                 .orElseThrow(() -> new RuntimeException("User profile not found"));
         userProfile1.setName(userProfile.getEmail());
@@ -33,7 +39,8 @@ public class UserProfileService {
     }
 
     @Transactional
-    public void updateUserProfile(Long userId, UserProfile userProfile) {
+    public void updateUserProfile(Long userId, USerProfileDTO uSerProfileDTO) {
+        UserProfile userProfile = userProfileMapper.toEntity(uSerProfileDTO);
         boolean updated = false;
         while (!updated) {
             try {

@@ -1,5 +1,9 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.ProductDTO;
+import com.softclub.trans.DTO.ReviewDTO;
+import com.softclub.trans.Mapper.ProductMapper;
+import com.softclub.trans.Mapper.ReviewMapper;
 import com.softclub.trans.entity.Product;
 import com.softclub.trans.entity.Review;
 import com.softclub.trans.repository.ProductRepository;
@@ -22,7 +26,14 @@ public class ProductService {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    public void addReviewAndUpdateProduct(Long productId, Review review) {
+    @Autowired
+    private ReviewMapper reviewMapper;
+
+    @Autowired
+    private ProductMapper productMapper;
+
+    public void addReviewAndUpdateProduct(Long productId, ReviewDTO reviewDTO) {
+        Review review = reviewMapper.toEntity(reviewDTO);
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         List<Review> rev = reviewRepository.findAllByProductId(productId);
@@ -43,7 +54,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Product product) {
+    public void updateProduct(ProductDTO productDTO) {
+        Product product = productMapper.toEntity(productDTO);
         int retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {

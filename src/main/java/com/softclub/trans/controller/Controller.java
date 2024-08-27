@@ -1,8 +1,8 @@
 package com.softclub.trans.controller;
 
-import com.softclub.trans.DTO.CustomerUpdateRequest;
-import com.softclub.trans.DTO.OrderInvoice;
-import com.softclub.trans.entity.*;
+import com.softclub.trans.DTO.*;
+import com.softclub.trans.entity.Order;
+import com.softclub.trans.entity.RawData;
 import com.softclub.trans.service.*;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +64,9 @@ public class Controller {
                     "TransactionTemplate. В случае ошибки транзакция должна быть откатана."
     )
     @PostMapping("/addUSer")
-    public String AddUser(@RequestBody User user) {
+    public String AddUser(@RequestBody UserDTO userDTO) {
         try {
-            userService.addUser(user);
+            userService.addUser(userDTO);
             return "Пользователь успешно добавлен.";
         } catch (Exception ex) {
             return "Ошибка при добавлении пользователя: " + ex.getMessage();
@@ -79,9 +79,9 @@ public class Controller {
                     "который обновляет баланс счета пользователя в таблице Accounts." +
                     " Если баланс становится отрицательным, транзакция должна быть откатана.")
     @PostMapping("/balance")
-    public ResponseEntity<String> updateBalance(@RequestBody Accounts accounts) {
+    public ResponseEntity<String> updateBalance(@RequestBody AccountsDTO accountsDTO) {
         try {
-            accountService.updateAccountBalance(accounts.getName(), accounts.getBalance());
+            accountService.updateAccountBalance(accountsDTO.getName(), accountsDTO.getBalance());
             return ResponseEntity.ok("Balance updated successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -95,11 +95,8 @@ public class Controller {
                     "только транзакция платежа должна быть откатана."
     )
     @PostMapping("/create")
-    public String createOrderWithPayment(@RequestBody Order order) {
-        Payment payment = new Payment();
-        payment.setAmount(order.getAmount());
-        payment.setOrderId(order.getId());
-        orderService.createOrderWithPayment(order, payment);
+    public String createOrderWithPayment(@RequestBody OrderDTO orderDTO) {
+        orderService.createOrderWithPayment(orderDTO);
         return "Order and payment processed";
     }
 
@@ -111,10 +108,10 @@ public class Controller {
             description = "Предварительно надо создать продукт"
     )
     @PostMapping("/{productId}/reviews")
-    public ResponseEntity<String> addReview(@PathVariable Long productId, @RequestBody Review review) {
+    public ResponseEntity<String> addReview(@PathVariable Long productId, @RequestBody ReviewDTO reviewDTO) {
 
         try {
-            productService.addReviewAndUpdateProduct(productId, review);
+            productService.addReviewAndUpdateProduct(productId, reviewDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -128,9 +125,9 @@ public class Controller {
                     " должно быть выброшено исключение."
     )
     @PostMapping("/updateProfile")
-    public ResponseEntity<String> updateProfile(@RequestBody UserProfile userProfile) {
+    public ResponseEntity<String> updateProfile(@RequestBody USerProfileDTO userProfileDTO) {
         try {
-            userProfileService.Update(userProfile);
+            userProfileService.Update(userProfileDTO);
             return ResponseEntity.ok("User profile updated successfully.");
         } catch (IllegalTransactionStateException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -190,8 +187,8 @@ public class Controller {
                     " чтобы избежать фантомных чтений."
     )
     @PostMapping("/sup/create-clean")
-    public String createAndCleanupSuppliers(@RequestBody Supplier supplier) {
-        supplierService.createAndCleanupSuppliers(supplier);
+    public String createAndCleanupSuppliers(@RequestBody SupplierDTO supplierDTO) {
+        supplierService.createAndCleanupSuppliers(supplierDTO);
         return "Supplier created and old records for this supplier cleaned up!";
     }
 
@@ -225,8 +222,8 @@ public class Controller {
                     " чтения, транзакция должна быть повторена."
     )
     @PutMapping("/{userProfileId}/updateUserProfile")
-    public String updateUserProfile(@PathVariable Long userProfileId, @RequestBody UserProfile userProfile) {
-        userProfileService.updateUserProfile(userProfileId, userProfile);
+    public String updateUserProfile(@PathVariable Long userProfileId, @RequestBody USerProfileDTO uSerProfileDTO) {
+        userProfileService.updateUserProfile(userProfileId, uSerProfileDTO);
         return "User profile updated successfully";
     }
 
@@ -256,7 +253,7 @@ public class Controller {
     public ResponseEntity<String> createCustomerAndUpdateDetails(@RequestBody CustomerUpdateRequest customerUpdateRequest) {
         try {
 
-            customerService.saveCustomerAndUpdateDetails(customerUpdateRequest.getCustomer(), customerUpdateRequest.getNewAddress());
+            customerService.saveCustomerAndUpdateDetails(customerUpdateRequest.getCustomerDTO(), customerUpdateRequest.getNewAddress());
 
             return new ResponseEntity<>("Customer created and details updated successfully", HttpStatus.CREATED);
         } catch (Exception e) {
@@ -273,9 +270,9 @@ public class Controller {
                     "В противном случае – подтвердить изменения.\n"
     )
     @PostMapping("/transaction")
-    public ResponseEntity<String> createTransaction(@RequestBody Transaction transaction) {
+    public ResponseEntity<String> createTransaction(@RequestBody TransactionDTO transactionDTO) {
         try {
-            transactionService.addTransaction(transaction);
+            transactionService.addTransaction(transactionDTO);
             return new ResponseEntity<>("Transaction successfully added", HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -291,9 +288,9 @@ public class Controller {
                     "Использовать Propagation.NEVER. Если транзакция существует, выбрасывается исключение."
     )
     @PostMapping("/addUSerNever")
-    public ResponseEntity<String> addUser(@RequestBody User user) {
+    public ResponseEntity<String> addUser(@RequestBody UserDTO userDTO) {
         try {
-            userService.AddUSerWithoutTransaction(user);
+            userService.AddUSerWithoutTransaction(userDTO);
             return new ResponseEntity<>("User added successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to add user: " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -307,10 +304,10 @@ public class Controller {
                     "метод должен повторить попытку обновления данных."
     )
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        product.setId(id);
+    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        productDTO.setId(id);
         try {
-            productService.updateProduct(product);
+            productService.updateProduct(productDTO);
             return new ResponseEntity<>("Product updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to update product: " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -327,7 +324,7 @@ public class Controller {
     public ResponseEntity<String> createOrderAndInvoice(
             @RequestBody OrderInvoice orderInvoice) {
         try {
-            orderService.createOrderAndInvoice(orderInvoice.getOrder(), orderInvoice.getInvoice());
+            orderService.createOrderAndInvoice(orderInvoice.getOrderDTO(), orderInvoice.getInvoiceDTO());
             return new ResponseEntity<>("Order and Invoice created successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to create Order and Invoice: " + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -340,9 +337,9 @@ public class Controller {
                     " Если время превышено, транзакция откатывается."
     )
     @PostMapping("/process")
-    public ResponseEntity<String> processPayment(@RequestBody Payment payment) {
+    public ResponseEntity<String> processPayment(@RequestBody PaymentDTO paymentDTO) {
         try {
-            paymentService.processPayment(payment);
+            paymentService.processPayment(paymentDTO);
             return ResponseEntity.ok("Payment processed successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Payment processing failed: " + e.getMessage());
@@ -357,9 +354,9 @@ public class Controller {
                     "должна быть откатана."
     )
     @PostMapping("/clients")
-    public ResponseEntity<String> addClientAndOrders(@RequestBody Client client) {
+    public ResponseEntity<String> addClientAndOrders(@RequestBody ClientDTO clientDTO) {
         try {
-            clientService.addClientAndUpdateOrders(client, client.getOrders());
+            clientService.addClientAndUpdateOrders(clientDTO);
             return ResponseEntity.ok("Client and orders added successfully");
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).body("Failed to add client and orders: " + e.getMessage());

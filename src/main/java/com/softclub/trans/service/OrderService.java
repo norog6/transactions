@@ -1,5 +1,9 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.InvoiceDTO;
+import com.softclub.trans.DTO.OrderDTO;
+import com.softclub.trans.Mapper.InvoiceMapper;
+import com.softclub.trans.Mapper.OrderMapper;
 import com.softclub.trans.entity.Invoice;
 import com.softclub.trans.entity.Order;
 import com.softclub.trans.entity.Payment;
@@ -27,9 +31,19 @@ public class OrderService {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private InvoiceMapper invoiceMapper;
+
     @Transactional
-    public void createOrderWithPayment(Order order, Payment payment) {
+    public void createOrderWithPayment(OrderDTO orderDTO) {
+        Order order = orderMapper.toEntity(orderDTO);
         orderRepository.save(order);
+        Payment payment = new Payment();
+        payment.setAmount(order.getAmount());
+        payment.setOrderId(order.getId());
         payment.setOrderId(order.getId());
         try {
             paymentService.createPayment(payment);
@@ -55,7 +69,9 @@ public class OrderService {
         }
     }
 
-    public void createOrderAndInvoice(Order order, Invoice invoice) {
+    public void createOrderAndInvoice(OrderDTO orderDTO, InvoiceDTO invoiceDTO) {
+        Order order = orderMapper.toEntity(orderDTO);
+        Invoice invoice = invoiceMapper.toEntity(invoiceDTO);
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {

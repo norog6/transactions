@@ -1,5 +1,7 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.CustomerDTO;
+import com.softclub.trans.Mapper.CustomerMapper;
 import com.softclub.trans.entity.Customer;
 import com.softclub.trans.entity.CustomerDetails;
 import com.softclub.trans.repository.CustomerDetailsRepository;
@@ -21,11 +23,13 @@ public class CustomerService {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
+    @Autowired
+    private CustomerMapper customerMapper;
+
     @Transactional
-    public void saveCustomerAndUpdateDetails(Customer customer, String newAddress) {
+    public void saveCustomerAndUpdateDetails(CustomerDTO customerDTO, String newAddress) {
+        Customer customer = customerMapper.toEntity(customerDTO);
         customerRepository.save(customer);
-
-
         boolean updateSuccessful = Boolean.TRUE.equals(transactionTemplate.execute(status -> {
             try {
                 CustomerDetails customerDetails = customerDetailsRepository.findByCustomerId(customer.getId());

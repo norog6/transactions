@@ -1,5 +1,7 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.ClientDTO;
+import com.softclub.trans.Mapper.ClientMapper;
 import com.softclub.trans.entity.Client;
 import com.softclub.trans.entity.Order;
 import com.softclub.trans.repository.ClientRepository;
@@ -18,9 +20,13 @@ public class ClientService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private ClientMapper clientMapper;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void addClientAndUpdateOrders(Client client, List<Order> orders) {
+    public void addClientAndUpdateOrders(ClientDTO clientDTO) {
+        Client client = clientMapper.toEntity(clientDTO);
+        List<Order> orders = client.getOrders();
         try {
             clientRepository.save(client);
 

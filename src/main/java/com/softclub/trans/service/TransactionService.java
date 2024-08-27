@@ -1,5 +1,7 @@
 package com.softclub.trans.service;
 
+import com.softclub.trans.DTO.TransactionDTO;
+import com.softclub.trans.Mapper.TransactionMapper;
 import com.softclub.trans.entity.Transaction;
 import com.softclub.trans.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,12 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private TransactionMapper transactionMapper;
+
     @Transactional
-    public void addTransaction(Transaction transaction) {
+    public void addTransaction(TransactionDTO transactionDTO) {
+        Transaction transaction = transactionMapper.toEntity(transactionDTO);
         if (transaction.getAmount() > TRANSACTION_LIMIT) {
             throw new IllegalArgumentException("Transaction amount exceeds the limit. Transaction rolled back.");
         }

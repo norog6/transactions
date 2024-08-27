@@ -13,9 +13,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "reviews")
 public class Review {
-
-
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +23,7 @@ public class Review {
 
     private double rating;
 
-
-
     @ManyToOne
     @JoinColumn(name = "product_id")
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Product product;
 }

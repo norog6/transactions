@@ -1,6 +1,5 @@
 package com.softclub.trans.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,17 +12,16 @@ import lombok.Setter;
 @Table(name = "userprofiles")
 public class UserProfile {
 
-    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    String email;
+    private String email;
 
-    String gender;
+    private String gender;
 
     @Version
-    Long version;
+    private Long version;
 }

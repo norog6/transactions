@@ -13,5 +13,5 @@ public class ClientDTO {
 
     private String name;
 
-    private List<Order> orders;
+    private List<OrderDTO> orders;
 }
